@@ -13,7 +13,7 @@ from airflow.providers.google.cloud.operators.dataproc import (
 PROJECT_ID = "fast-gate-479912-j1"
 REGION = "us-east1"
 CLUSTER_NAME = "cluster-2a30"
-COMPOSER_BUCKET = "healthcare-bucket-1122025"
+COMPOSER_BUCKET = "us-central1-demo-instance-0940639b-bucket"
 
 GCS_JOB_FILE_1 = f"gs://{COMPOSER_BUCKET}/data/INGESTION/hospitalA_mysqlToLanding.py"
 PYSPARK_JOB_1 = {
