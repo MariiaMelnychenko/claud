@@ -17,10 +17,10 @@ COMPOSER_BUCKET = "us-central1-demo-instance-0940639b-bucket"
 
 # COMMON SPARK PROPERTIES (added for all jobs)
 SPARK_PROPERTIES = {
-    "spark.driver.memory": "4g",
-    "spark.executor.memory": "4g",
-    "spark.executor.cores": "2",
-    "spark.executor.instances": "2"
+    "spark.driver.memory": "2g",
+    "spark.executor.memory": "2g",
+    "spark.executor.cores": "1",
+    "spark.executor.instances": "1"
 }
 
 # ---------- JOB 1 ----------
