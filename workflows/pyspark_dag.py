@@ -15,32 +15,56 @@ REGION = "us-central1"
 CLUSTER_NAME = "cluster-2a30"
 COMPOSER_BUCKET = "us-central1-demo-instance-0940639b-bucket"
 
+# COMMON SPARK PROPERTIES (added for all jobs)
+SPARK_PROPERTIES = {
+    "spark.driver.memory": "4g",
+    "spark.executor.memory": "4g",
+    "spark.executor.cores": "2",
+    "spark.executor.instances": "2"
+}
+
+# ---------- JOB 1 ----------
 GCS_JOB_FILE_1 = f"gs://{COMPOSER_BUCKET}/data/INGESTION/hospitalA_mysqlToLanding.py"
 PYSPARK_JOB_1 = {
     "reference": {"project_id": PROJECT_ID},
     "placement": {"cluster_name": CLUSTER_NAME},
-    "pyspark_job": {"main_python_file_uri": GCS_JOB_FILE_1},
+    "pyspark_job": {
+        "main_python_file_uri": GCS_JOB_FILE_1,
+        "properties": SPARK_PROPERTIES
+    },
 }
 
+# ---------- JOB 2 ----------
 GCS_JOB_FILE_2 = f"gs://{COMPOSER_BUCKET}/data/INGESTION/hospitalB_mysqlToLanding.py"
 PYSPARK_JOB_2 = {
     "reference": {"project_id": PROJECT_ID},
     "placement": {"cluster_name": CLUSTER_NAME},
-    "pyspark_job": {"main_python_file_uri": GCS_JOB_FILE_2},
+    "pyspark_job": {
+        "main_python_file_uri": GCS_JOB_FILE_2,
+        "properties": SPARK_PROPERTIES
+    },
 }
 
+# ---------- JOB 3 ----------
 GCS_JOB_FILE_3 = f"gs://{COMPOSER_BUCKET}/data/INGESTION/claims.py"
 PYSPARK_JOB_3 = {
     "reference": {"project_id": PROJECT_ID},
     "placement": {"cluster_name": CLUSTER_NAME},
-    "pyspark_job": {"main_python_file_uri": GCS_JOB_FILE_3},
+    "pyspark_job": {
+        "main_python_file_uri": GCS_JOB_FILE_3,
+        "properties": SPARK_PROPERTIES
+    },
 }
 
+# ---------- JOB 4 ----------
 GCS_JOB_FILE_4 = f"gs://{COMPOSER_BUCKET}/data/INGESTION/cpt_codes.py"
 PYSPARK_JOB_4 = {
     "reference": {"project_id": PROJECT_ID},
     "placement": {"cluster_name": CLUSTER_NAME},
-    "pyspark_job": {"main_python_file_uri": GCS_JOB_FILE_4},
+    "pyspark_job": {
+        "main_python_file_uri": GCS_JOB_FILE_4,
+        "properties": SPARK_PROPERTIES
+    },
 }
 
 
@@ -65,7 +89,6 @@ with DAG(
     tags=["pyspark", "dataproc", "etl", "marvel"]
 ) as dag:
 
-    # define the Tasks
     start_cluster = DataprocStartClusterOperator(
         task_id="start_cluster",
         project_id=PROJECT_ID,
@@ -77,28 +100,28 @@ with DAG(
         task_id="pyspark_task_1",
         job=PYSPARK_JOB_1,
         region=REGION,
-        project_id=PROJECT_ID
+        project_id=PROJECT_ID,
     )
 
     pyspark_task_2 = DataprocSubmitJobOperator(
         task_id="pyspark_task_2",
         job=PYSPARK_JOB_2,
         region=REGION,
-        project_id=PROJECT_ID
+        project_id=PROJECT_ID,
     )
 
     pyspark_task_3 = DataprocSubmitJobOperator(
         task_id="pyspark_task_3",
         job=PYSPARK_JOB_3,
         region=REGION,
-        project_id=PROJECT_ID
+        project_id=PROJECT_ID,
     )
 
     pyspark_task_4 = DataprocSubmitJobOperator(
         task_id="pyspark_task_4",
         job=PYSPARK_JOB_4,
         region=REGION,
-        project_id=PROJECT_ID
+        project_id=PROJECT_ID,
     )
 
     stop_cluster = DataprocStopClusterOperator(
@@ -108,5 +131,4 @@ with DAG(
         cluster_name=CLUSTER_NAME,
     )
 
-# define the task dependencies
-start_cluster >> pyspark_task_1 >> pyspark_task_2 >> pyspark_task_3 >> pyspark_task_4 >> stop_cluster
+    start_cluster >> pyspark_task_1 >> pyspark_task_2 >> pyspark_task_3 >> pyspark_task_4 >> stop_cluster
