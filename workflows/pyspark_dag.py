@@ -1,7 +1,7 @@
 # import all modules
 import airflow
 from airflow import DAG
-from datetime import timedelta
+from datetime import timedelta, datetime
 from airflow.utils.dates import days_ago
 from airflow.providers.google.cloud.operators.dataproc import (
     DataprocStartClusterOperator,
@@ -70,7 +70,7 @@ PYSPARK_JOB_4 = {
 
 ARGS = {
     "owner": "SHAIK SAIDHUL",
-    "start_date": None,
+    "start_date": datetime(2025, 12, 1),
     "depends_on_past": False,
     "email_on_failure": False,
     "email_on_retry": False,
